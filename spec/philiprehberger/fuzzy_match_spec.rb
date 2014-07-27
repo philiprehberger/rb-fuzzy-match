@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'spec_helper'
 RSpec.describe Philiprehberger::FuzzyMatch do
   describe '.levenshtein' do
     it 'returns 0 for identical strings' do

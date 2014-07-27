@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'spec_helper'
 RSpec.describe Philiprehberger::FuzzyMatch::JaroWinkler do
   describe '.similarity' do
     it 'returns 1.0 for identical strings' do
