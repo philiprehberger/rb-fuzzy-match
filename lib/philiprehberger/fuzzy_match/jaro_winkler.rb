@@ -7,8 +7,8 @@ module Philiprehberger
       MAX_PREFIX_LENGTH = 4
 
       def self.similarity(str_a, str_b)
-        a = str_a.downcase
-        b = str_b.downcase
+        a = str_a.to_s.downcase
+        b = str_b.to_s.downcase
 
         return 1.0 if a == b
         return 0.0 if a.empty? || b.empty?
@@ -22,7 +22,7 @@ module Philiprehberger
         return 1.0 if a == b
         return 0.0 if a.empty? || b.empty?
 
-        match_window = [a.length, b.length].max / 2 - 1
+        match_window = ([a.length, b.length].max / 2) - 1
         match_window = 0 if match_window.negative?
 
         a_matches = Array.new(a.length, false)
@@ -57,7 +57,7 @@ module Philiprehberger
 
         ((matches.to_f / a.length) +
           (matches.to_f / b.length) +
-          ((matches - transpositions / 2.0) / matches)) / 3.0
+          ((matches - (transpositions / 2.0)) / matches)) / 3.0
       end
 
       def self.common_prefix_length(a, b)

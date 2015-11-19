@@ -4,8 +4,8 @@ module Philiprehberger
   module FuzzyMatch
     module Dice
       def self.coefficient(str_a, str_b)
-        a = str_a.downcase
-        b = str_b.downcase
+        a = str_a.to_s.downcase
+        b = str_b.to_s.downcase
 
         return 1.0 if a == b
         return 0.0 if a.length < 2 || b.length < 2
@@ -28,7 +28,7 @@ module Philiprehberger
       end
 
       def self.bigrams(str)
-        (0...str.length - 1).map { |i| str[i, 2] }
+        (0...(str.length - 1)).map { |i| str[i, 2] }
       end
 
       private_class_method :bigrams

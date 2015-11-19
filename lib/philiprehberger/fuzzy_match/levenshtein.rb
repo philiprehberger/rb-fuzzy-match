@@ -4,15 +4,14 @@ module Philiprehberger
   module FuzzyMatch
     module Levenshtein
       def self.distance(str_a, str_b)
-        a = str_a.downcase
-        b = str_b.downcase
+        a = str_a.to_s.downcase
+        b = str_b.to_s.downcase
 
         return b.length if a.empty?
         return a.length if b.empty?
 
-        if a.length > b.length
-          a, b = b, a
-        end
+        # Use shorter string for column to minimize space: O(min(n,m))
+        a, b = b, a if a.length > b.length
 
         prev_row = (0..a.length).to_a
 
