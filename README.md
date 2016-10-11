@@ -1,6 +1,7 @@
 # philiprehberger-fuzzy_match
 
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://badge.fury.io/rb/philiprehberger-fuzzy_match)
+$badge_line
 [![CI](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml)
 
 Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search.
