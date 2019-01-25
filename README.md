@@ -27,7 +27,7 @@ gem install philiprehberger-fuzzy_match
 ## Usage
 
 ```ruby
-require 'philiprehberger/fuzzy_match'
+require "philiprehberger/fuzzy_match"
 
 # Individual algorithms
 Philiprehberger::FuzzyMatch.levenshtein('kitten', 'sitting')   # => 3
