@@ -3,6 +3,7 @@
 [![Tests](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://rubygems.org/gems/philiprehberger-fuzzy_match)
 [![License](https://img.shields.io/github/license/philiprehberger/rb-fuzzy-match)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search
 
@@ -88,4 +89,4 @@ bundle exec rubocop
 
 ## License
 
-MIT
+[MIT](LICENSE)
