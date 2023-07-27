@@ -62,6 +62,21 @@ Philiprehberger::FuzzyMatch.suggest('comit', %w[commit comment zebra], threshold
 # => ["commit", "comment"]
 ```
 
+### Phonetic Matching
+
+```ruby
+Philiprehberger::FuzzyMatch.soundex('Robert')    # => "R163"
+Philiprehberger::FuzzyMatch.metaphone('Smith')    # => "SM0"
+Philiprehberger::FuzzyMatch.phonetic_match?('Robert', 'Rupert')  # => true
+```
+
+### Deduplication
+
+```ruby
+Philiprehberger::FuzzyMatch.deduplicate(%w[hello helo world wrld], threshold: 0.8)
+# => ["hello", "world"]
+```
+
 ## API
 
 ### `Philiprehberger::FuzzyMatch`
@@ -75,6 +90,10 @@ Philiprehberger::FuzzyMatch.suggest('comit', %w[commit comment zebra], threshold
 | `.best(query, candidates, threshold: 0.0)` | Best match as `{ match:, score: }` |
 | `.search(query, candidates, threshold: 0.3)` | Ranked array of `{ match:, score: }` |
 | `.suggest(query, candidates, threshold: 0.6, max: 5)` | Array of match strings |
+| `FuzzyMatch.soundex(string)` | Generate 4-character Soundex code |
+| `FuzzyMatch.metaphone(string)` | Generate Metaphone phonetic code |
+| `FuzzyMatch.phonetic_match?(a, b)` | Check if two strings match phonetically |
+| `FuzzyMatch.deduplicate(array, threshold:, algorithm:)` | Group and deduplicate similar strings |
 
 All methods are case-insensitive by default.
 

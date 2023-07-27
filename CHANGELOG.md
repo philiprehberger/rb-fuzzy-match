@@ -7,6 +7,14 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-01
+
+### Added
+- `FuzzyMatch.soundex(string)` for Soundex phonetic code generation
+- `FuzzyMatch.metaphone(string)` for Metaphone phonetic code generation
+- `FuzzyMatch.phonetic_match?(a, b)` for phonetic similarity comparison
+- `FuzzyMatch.deduplicate(array, threshold:, algorithm:)` for batch deduplication
+
 ## [0.1.11] - 2026-03-31
 
 ### Added
