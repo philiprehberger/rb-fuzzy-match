@@ -6,6 +6,7 @@ require_relative 'fuzzy_match/jaro_winkler'
 require_relative 'fuzzy_match/dice'
 require_relative 'fuzzy_match/soundex'
 require_relative 'fuzzy_match/metaphone'
+require_relative 'fuzzy_match/lcs'
 
 module Philiprehberger
   module FuzzyMatch
@@ -19,6 +20,24 @@ module Philiprehberger
 
     def self.dice_coefficient(str_a, str_b)
       Dice.coefficient(str_a, str_b)
+    end
+
+    # Length of the longest common subsequence
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @return [Integer]
+    def self.lcs(str_a, str_b)
+      Lcs.length(str_a, str_b)
+    end
+
+    # Normalized LCS similarity (0.0 to 1.0)
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @return [Float]
+    def self.lcs_ratio(str_a, str_b)
+      Lcs.ratio(str_a, str_b)
     end
 
     def self.ratio(str_a, str_b)

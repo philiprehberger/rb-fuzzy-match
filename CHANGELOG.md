@@ -7,6 +7,17 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-10
+
+### Added
+- `FuzzyMatch.lcs(a, b)` for Longest Common Subsequence length
+- `FuzzyMatch.lcs_ratio(a, b)` for normalized LCS similarity (0.0 to 1.0)
+
+### Fixed
+- Fix gemspec authors, email, and required Ruby version format to match guide
+- Add gem version field to bug report template
+- Add alternatives field to feature request template
+
 ## [0.2.0] - 2026-04-01
 
 ### Added

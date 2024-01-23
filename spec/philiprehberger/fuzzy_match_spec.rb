@@ -67,6 +67,43 @@ RSpec.describe Philiprehberger::FuzzyMatch do
     end
   end
 
+  describe '.lcs' do
+    it 'returns known LCS length' do
+      expect(described_class.lcs('kitten', 'sitting')).to eq(4)
+    end
+
+    it 'returns 0 for empty strings' do
+      expect(described_class.lcs('abc', '')).to eq(0)
+    end
+
+    it 'returns full length for identical strings' do
+      expect(described_class.lcs('hello', 'hello')).to eq(5)
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.lcs('ABC', 'abc')).to eq(3)
+    end
+  end
+
+  describe '.lcs_ratio' do
+    it 'returns 1.0 for identical strings' do
+      expect(described_class.lcs_ratio('hello', 'hello')).to eq(1.0)
+    end
+
+    it 'returns 0.0 for completely different strings' do
+      expect(described_class.lcs_ratio('abc', 'xyz')).to eq(0.0)
+    end
+
+    it 'returns a value between 0.0 and 1.0' do
+      ratio = described_class.lcs_ratio('kitten', 'sitting')
+      expect(ratio).to be_between(0.0, 1.0)
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.lcs_ratio('Hello', 'hello')).to eq(1.0)
+    end
+  end
+
   describe '.ratio' do
     it 'returns 1.0 for identical strings' do
       expect(described_class.ratio('hello', 'hello')).to eq(1.0)

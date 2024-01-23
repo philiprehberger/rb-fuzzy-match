@@ -5,16 +5,16 @@ require_relative 'lib/philiprehberger/fuzzy_match/version'
 Gem::Specification.new do |spec|
   spec.name = 'philiprehberger-fuzzy_match'
   spec.version = Philiprehberger::FuzzyMatch::VERSION
-  spec.authors = ['philiprehberger']
-  spec.email = ['philiprehberger@users.noreply.github.com']
+  spec.authors = ['Philip Rehberger']
+  spec.email = ['me@philiprehberger.com']
 
-  spec.summary = 'Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search'
+  spec.summary = 'Fuzzy string matching with Levenshtein, Jaro-Winkler, LCS, and phonetic algorithms'
   spec.description = 'Match strings approximately using multiple algorithms: Levenshtein edit distance, ' \
-                     'Jaro-Winkler similarity, and Dice coefficient. Find best matches from candidate ' \
-                     'lists and generate did-you-mean suggestions.'
+                     'Jaro-Winkler similarity, Dice coefficient, and Longest Common Subsequence. ' \
+                     'Includes Soundex and Metaphone phonetic matching, ranked search, and deduplication.'
   spec.homepage = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-fuzzy_match'
   spec.license = 'MIT'
-  spec.required_ruby_version = '>= 3.1'
+  spec.required_ruby_version = '>= 3.1.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/philiprehberger/rb-fuzzy-match'

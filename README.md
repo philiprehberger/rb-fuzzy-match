@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://rubygems.org/gems/philiprehberger-fuzzy_match)
 [![Last updated](https://img.shields.io/github/last-commit/philiprehberger/rb-fuzzy-match)](https://github.com/philiprehberger/rb-fuzzy-match/commits/main)
 
-Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search
+Fuzzy string matching with Levenshtein, Jaro-Winkler, LCS, and phonetic algorithms
 
 ## Requirements
 
@@ -36,6 +36,13 @@ Philiprehberger::FuzzyMatch.dice_coefficient('night', 'nacht') # => 0.25
 
 # Normalized ratio (0.0 to 1.0)
 Philiprehberger::FuzzyMatch.ratio('kitten', 'sitting')  # => ~0.57
+```
+
+### Longest Common Subsequence
+
+```ruby
+Philiprehberger::FuzzyMatch.lcs('kitten', 'sitting')       # => 4
+Philiprehberger::FuzzyMatch.lcs_ratio('kitten', 'sitting')  # => ~0.615
 ```
 
 ### Best Match
@@ -86,14 +93,16 @@ Philiprehberger::FuzzyMatch.deduplicate(%w[hello helo world wrld], threshold: 0.
 | `.levenshtein(a, b)` | Levenshtein edit distance (integer) |
 | `.jaro_winkler(a, b)` | Jaro-Winkler similarity (0.0 to 1.0) |
 | `.dice_coefficient(a, b)` | Dice coefficient from bigram overlap (0.0 to 1.0) |
+| `.lcs(a, b)` | Longest common subsequence length (integer) |
+| `.lcs_ratio(a, b)` | Normalized LCS similarity (0.0 to 1.0) |
 | `.ratio(a, b)` | Normalized Levenshtein ratio (0.0 to 1.0) |
 | `.best(query, candidates, threshold: 0.0)` | Best match as `{ match:, score: }` |
 | `.search(query, candidates, threshold: 0.3)` | Ranked array of `{ match:, score: }` |
 | `.suggest(query, candidates, threshold: 0.6, max: 5)` | Array of match strings |
-| `FuzzyMatch.soundex(string)` | Generate 4-character Soundex code |
-| `FuzzyMatch.metaphone(string)` | Generate Metaphone phonetic code |
-| `FuzzyMatch.phonetic_match?(a, b)` | Check if two strings match phonetically |
-| `FuzzyMatch.deduplicate(array, threshold:, algorithm:)` | Group and deduplicate similar strings |
+| `.soundex(string)` | Generate 4-character Soundex code |
+| `.metaphone(string)` | Generate Metaphone phonetic code |
+| `.phonetic_match?(a, b)` | Check if two strings match phonetically |
+| `.deduplicate(array, threshold:, algorithm:)` | Group and deduplicate similar strings |
 
 All methods are case-insensitive by default.
 
