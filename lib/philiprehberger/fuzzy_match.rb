@@ -7,6 +7,7 @@ require_relative 'fuzzy_match/dice'
 require_relative 'fuzzy_match/soundex'
 require_relative 'fuzzy_match/metaphone'
 require_relative 'fuzzy_match/lcs'
+require_relative 'fuzzy_match/damerau_levenshtein'
 
 module Philiprehberger
   module FuzzyMatch
@@ -38,6 +39,30 @@ module Philiprehberger
     # @return [Float]
     def self.lcs_ratio(str_a, str_b)
       Lcs.ratio(str_a, str_b)
+    end
+
+    # Damerau-Levenshtein edit distance (counts transpositions as 1 edit)
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @return [Integer]
+    def self.damerau_levenshtein(str_a, str_b)
+      DamerauLevenshtein.distance(str_a, str_b)
+    end
+
+    # Normalized Damerau-Levenshtein similarity (0.0 to 1.0)
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @return [Float]
+    def self.damerau_ratio(str_a, str_b)
+      a = str_a.to_s.downcase
+      b = str_b.to_s.downcase
+      max_len = [a.length, b.length].max
+      return 1.0 if max_len.zero?
+
+      distance = DamerauLevenshtein.distance(a, b)
+      1.0 - (distance.to_f / max_len)
     end
 
     def self.ratio(str_a, str_b)

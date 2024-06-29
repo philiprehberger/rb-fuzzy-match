@@ -8,10 +8,11 @@ Gem::Specification.new do |spec|
   spec.authors = ['Philip Rehberger']
   spec.email = ['me@philiprehberger.com']
 
-  spec.summary = 'Fuzzy string matching with Levenshtein, Jaro-Winkler, LCS, and phonetic algorithms'
+  spec.summary = 'Fuzzy string matching with Levenshtein, Damerau-Levenshtein, Jaro-Winkler, LCS, and phonetic algorithms'
   spec.description = 'Match strings approximately using multiple algorithms: Levenshtein edit distance, ' \
-                     'Jaro-Winkler similarity, Dice coefficient, and Longest Common Subsequence. ' \
-                     'Includes Soundex and Metaphone phonetic matching, ranked search, and deduplication.'
+                     'Damerau-Levenshtein with transpositions, Jaro-Winkler similarity, Dice coefficient, ' \
+                     'and Longest Common Subsequence. Includes Soundex and Metaphone phonetic matching, ' \
+                     'ranked search, and deduplication.'
   spec.homepage = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-fuzzy_match'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1.0'
