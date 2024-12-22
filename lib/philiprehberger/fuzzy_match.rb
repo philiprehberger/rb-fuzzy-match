@@ -8,9 +8,13 @@ require_relative 'fuzzy_match/soundex'
 require_relative 'fuzzy_match/metaphone'
 require_relative 'fuzzy_match/lcs'
 require_relative 'fuzzy_match/damerau_levenshtein'
+require_relative 'fuzzy_match/hamming'
 
 module Philiprehberger
   module FuzzyMatch
+    class Error < StandardError
+    end
+
     def self.levenshtein(str_a, str_b)
       Levenshtein.distance(str_a, str_b)
     end
@@ -134,6 +138,87 @@ module Philiprehberger
       sa = Soundex.code(a)
       sb = Soundex.code(b)
       !sa.empty? && sa == sb
+    end
+
+    # Hamming distance for equal-length strings
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @return [Integer]
+    # @raise [Error] if strings have different lengths
+    def self.hamming(str_a, str_b)
+      Hamming.distance(str_a, str_b)
+    end
+
+    # Token-sort ratio: sort tokens alphabetically, then compute Jaro-Winkler similarity
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @return [Float] similarity between 0.0 and 1.0
+    def self.token_sort_ratio(str_a, str_b)
+      a = str_a.to_s.downcase.split.sort.join(' ')
+      b = str_b.to_s.downcase.split.sort.join(' ')
+      JaroWinkler.similarity(a, b)
+    end
+
+    # Token-set ratio: compare token sets using Jaccard-like string similarity
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @return [Float] similarity between 0.0 and 1.0
+    def self.token_set_ratio(str_a, str_b)
+      tokens_a = str_a.to_s.downcase.split.uniq.sort
+      tokens_b = str_b.to_s.downcase.split.uniq.sort
+
+      return 1.0 if tokens_a == tokens_b
+      return 0.0 if tokens_a.empty? && tokens_b.empty?
+
+      intersection = tokens_a & tokens_b
+      combined = (tokens_a | tokens_b).sort
+
+      common = intersection.join(' ')
+      rest_a = (tokens_a - intersection).sort.join(' ')
+      rest_b = (tokens_b - intersection).sort.join(' ')
+
+      joined_a = [common, rest_a].reject(&:empty?).join(' ')
+      joined_b = [common, rest_b].reject(&:empty?).join(' ')
+      joined_full = combined.join(' ')
+
+      scores = [
+        JaroWinkler.similarity(joined_a, joined_b),
+        JaroWinkler.similarity(common, joined_a),
+        JaroWinkler.similarity(common, joined_b),
+        JaroWinkler.similarity(common, joined_full)
+      ]
+
+      scores.compact.max || 0.0
+    end
+
+    # Weighted score combining multiple algorithms
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @param weights [Hash] algorithm => weight pairs (must sum to 1.0)
+    # @return [Float] weighted similarity score
+    # @raise [Error] if weights do not sum to 1.0
+    def self.weighted_score(str_a, str_b, weights:)
+      sum = weights.values.reduce(0.0, :+)
+      raise Error, "Weights must sum to 1.0, got #{sum}" unless (sum - 1.0).abs < 1e-9
+
+      algorithm_map = {
+        jaro_winkler: ->(a, b) { jaro_winkler(a, b) },
+        dice: ->(a, b) { dice_coefficient(a, b) },
+        levenshtein_ratio: ->(a, b) { ratio(a, b) },
+        lcs_ratio: ->(a, b) { lcs_ratio(a, b) },
+        damerau_ratio: ->(a, b) { damerau_ratio(a, b) }
+      }
+
+      weights.reduce(0.0) do |total, (algo, weight)|
+        fn = algorithm_map[algo]
+        raise Error, "Unknown algorithm: #{algo}" unless fn
+
+        total + (fn.call(str_a, str_b) * weight)
+      end
     end
 
     # Group and deduplicate similar strings
