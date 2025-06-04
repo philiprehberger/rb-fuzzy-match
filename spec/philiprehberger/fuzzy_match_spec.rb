@@ -215,6 +215,52 @@ RSpec.describe Philiprehberger::FuzzyMatch do
     end
   end
 
+  describe '.rank' do
+    let(:candidates) { %w[commit comment command compare zebra] }
+
+    it 'returns all candidates sorted descending by score' do
+      results = described_class.rank('comit', candidates)
+      expect(results.length).to eq(candidates.length)
+      scores = results.map { |r| r[:score] }
+      expect(scores).to eq(scores.sort.reverse)
+    end
+
+    it 'returns empty array for empty candidates' do
+      expect(described_class.rank('anything', [])).to eq([])
+    end
+
+    it 'preserves original input order for ties (stable sort)' do
+      # Two identical candidates must retain input order
+      tied = %w[apple apple]
+      results = described_class.rank('apple', tied)
+      expect(results.map { |r| r[:score] }.uniq).to eq([1.0])
+      expect(results.map { |r| r[:value] }).to eq(%w[apple apple])
+    end
+
+    it 'defaults to jaro_winkler' do
+      default_result = described_class.rank('martha', %w[marhta])
+      jw_result = described_class.rank('martha', %w[marhta], algorithm: :jaro_winkler)
+      expect(default_result.first[:score]).to eq(jw_result.first[:score])
+      # Distinguish jaro_winkler from levenshtein for this pair
+      lev_result = described_class.rank('martha', %w[marhta], algorithm: :levenshtein)
+      expect(default_result.first[:score]).not_to eq(lev_result.first[:score])
+    end
+
+    it 'supports explicit algorithm: :levenshtein' do
+      results = described_class.rank('kitten', %w[sitting kitten mitten], algorithm: :levenshtein)
+      expect(results.first[:value]).to eq('kitten')
+      expect(results.first[:score]).to eq(1.0)
+    end
+
+    it 'returns hashes with :value and :score keys' do
+      results = described_class.rank('abc', %w[abc abd])
+      results.each do |entry|
+        expect(entry).to be_a(Hash)
+        expect(entry.keys).to contain_exactly(:value, :score)
+      end
+    end
+  end
+
   describe '.soundex' do
     it 'generates Soundex code for Robert' do
       expect(described_class.soundex('Robert')).to eq('R163')

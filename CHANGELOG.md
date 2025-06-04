@@ -7,6 +7,11 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-04-15
+
+### Added
+- `FuzzyMatch.rank(query, candidates, algorithm:)` returns all candidates sorted by similarity with `{ value:, score: }` entries (stable tie-break)
+
 ## [0.5.0] - 2026-04-14
 
 ### Added
