@@ -7,6 +7,11 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-04-15
+
+### Added
+- `FuzzyMatch.similarity_matrix(strings, algorithm:, threshold:)` returns hash-of-hashes with pairwise similarity scores for batch deduplication and clustering
+
 ## [0.6.0] - 2026-04-15
 
 ### Added

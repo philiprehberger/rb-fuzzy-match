@@ -443,4 +443,63 @@ RSpec.describe Philiprehberger::FuzzyMatch do
       expect(described_class.deduplicate([])).to eq([])
     end
   end
+
+  describe '.similarity_matrix' do
+    let(:strings) { %w[hello helo world] }
+
+    it 'returns a hash-of-hashes with all pairwise scores' do
+      matrix = described_class.similarity_matrix(strings)
+      expect(matrix.keys).to eq(strings)
+      strings.each do |s|
+        expect(matrix[s].keys).to eq(strings)
+      end
+    end
+
+    it 'returns 1.0 on the diagonal' do
+      matrix = described_class.similarity_matrix(strings)
+      strings.each do |s|
+        expect(matrix[s][s]).to eq(1.0)
+      end
+    end
+
+    it 'returns scores between 0.0 and 1.0' do
+      matrix = described_class.similarity_matrix(strings)
+      matrix.each_value do |row|
+        row.each_value do |score|
+          expect(score).to be_between(0.0, 1.0)
+        end
+      end
+    end
+
+    it 'filters pairs below threshold when threshold is given' do
+      matrix = described_class.similarity_matrix(strings, threshold: 0.9)
+      strings.each do |s|
+        matrix[s].each_value do |score|
+          expect(score).to be >= 0.9
+        end
+      end
+      expect(matrix['hello']['world']).to be_nil
+    end
+
+    it 'defaults to jaro_winkler algorithm' do
+      matrix = described_class.similarity_matrix(%w[martha marhta])
+      jw_score = described_class.jaro_winkler('martha', 'marhta').round(4)
+      expect(matrix['martha']['marhta']).to eq(jw_score)
+    end
+
+    it 'supports alternative algorithms' do
+      matrix = described_class.similarity_matrix(%w[night nacht], algorithm: :dice)
+      dice_score = described_class.dice_coefficient('night', 'nacht').round(4)
+      expect(matrix['night']['nacht']).to eq(dice_score)
+    end
+
+    it 'returns empty hash for empty input' do
+      expect(described_class.similarity_matrix([])).to eq({})
+    end
+
+    it 'handles a single string' do
+      matrix = described_class.similarity_matrix(%w[hello])
+      expect(matrix).to eq({ 'hello' => { 'hello' => 1.0 } })
+    end
+  end
 end
