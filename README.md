@@ -1,10 +1,9 @@
 # philiprehberger-fuzzy_match
 
-[![Tests](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml)
-[![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://rubygems.org/gems/philiprehberger-fuzzy_match)
-[![License](https://img.shields.io/github/license/philiprehberger/rb-fuzzy-match)](LICENSE)
+[![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://badge.fury.io/rb/philiprehberger-fuzzy_match)
+[![CI](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml)
 
-Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search
+Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search.
 
 ## Requirements
 
@@ -12,16 +11,14 @@ Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search
 
 ## Installation
 
-Add to your Gemfile:
+```sh
+gem install philiprehberger-fuzzy_match
+```
+
+Or add to your Gemfile:
 
 ```ruby
 gem 'philiprehberger-fuzzy_match'
-```
-
-Or install directly:
-
-```bash
-gem install philiprehberger-fuzzy_match
 ```
 
 ## Usage
@@ -29,16 +26,20 @@ gem install philiprehberger-fuzzy_match
 ```ruby
 require 'philiprehberger/fuzzy_match'
 
-Philiprehberger::FuzzyMatch.levenshtein('kitten', 'sitting')  # => 3
-Philiprehberger::FuzzyMatch.jaro_winkler('martha', 'marhta')  # => 0.96
-Philiprehberger::FuzzyMatch.ratio('kitten', 'sitting')        # => 0.5714
+# Individual algorithms
+Philiprehberger::FuzzyMatch.levenshtein('kitten', 'sitting')   # => 3
+Philiprehberger::FuzzyMatch.jaro_winkler('martha', 'marhta')   # => ~0.96
+Philiprehberger::FuzzyMatch.dice_coefficient('night', 'nacht') # => 0.25
+
+# Normalized ratio (0.0 to 1.0)
+Philiprehberger::FuzzyMatch.ratio('kitten', 'sitting')  # => ~0.57
 ```
 
 ### Best Match
 
 ```ruby
-candidates = ['Ruby', 'Python', 'Rust', 'JavaScript']
-result = Philiprehberger::FuzzyMatch.best_match('rubyy', candidates)
+candidates = %w[Ruby Python Rust JavaScript]
+result = Philiprehberger::FuzzyMatch.best('rubyy', candidates)
 result[:match]  # => "Ruby"
 result[:score]  # => 0.8
 ```
@@ -46,22 +47,15 @@ result[:score]  # => 0.8
 ### Ranked Search
 
 ```ruby
-candidates = ['commit', 'comment', 'command', 'compare']
-results = Philiprehberger::FuzzyMatch.search('comit', candidates, limit: 3)
-# => [{ match: "commit", score: 0.8333 }, ...]
+candidates = %w[commit comment command compare]
+results = Philiprehberger::FuzzyMatch.search('comit', candidates, threshold: 0.5)
+# => [{ match: "commit", score: 0.8333 }, { match: "comment", score: 0.7143 }, ...]
 ```
 
-### Search with Key
+### Did-You-Mean Suggestions
 
 ```ruby
-items = [{ name: 'commit' }, { name: 'comment' }]
-results = Philiprehberger::FuzzyMatch.search('comit', items, key: :name)
-```
-
-### Suggestions
-
-```ruby
-Philiprehberger::FuzzyMatch.suggest('comit', ['commit', 'comment', 'zebra'])
+Philiprehberger::FuzzyMatch.suggest('comit', %w[commit comment zebra], threshold: 0.6, max: 3)
 # => ["commit", "comment"]
 ```
 
@@ -71,21 +65,24 @@ Philiprehberger::FuzzyMatch.suggest('comit', ['commit', 'comment', 'zebra'])
 
 | Method | Description |
 |--------|-------------|
-| `.levenshtein(a, b)` | Levenshtein edit distance between two strings |
+| `.levenshtein(a, b)` | Levenshtein edit distance (integer) |
 | `.jaro_winkler(a, b)` | Jaro-Winkler similarity (0.0 to 1.0) |
-| `.ratio(a, b)` | Normalized similarity ratio (0.0 to 1.0) |
-| `.best_match(query, candidates, threshold:)` | Find the single best match from candidates |
-| `.search(query, candidates, key:, limit:, threshold:)` | Ranked search across candidates |
-| `.suggest(query, candidates, threshold:)` | Return matches above threshold |
+| `.dice_coefficient(a, b)` | Dice coefficient from bigram overlap (0.0 to 1.0) |
+| `.ratio(a, b)` | Normalized Levenshtein ratio (0.0 to 1.0) |
+| `.best(query, candidates, threshold: 0.0)` | Best match as `{ match:, score: }` |
+| `.search(query, candidates, threshold: 0.3)` | Ranked array of `{ match:, score: }` |
+| `.suggest(query, candidates, threshold: 0.6, max: 5)` | Array of match strings |
+
+All methods are case-insensitive by default.
 
 ## Development
 
-```bash
+```sh
 bundle install
-bundle exec rspec      # Run tests
-bundle exec rubocop    # Check code style
+bundle exec rspec
+bundle exec rubocop
 ```
 
 ## License
 
-MIT
+MIT License. See [LICENSE](LICENSE) for details.

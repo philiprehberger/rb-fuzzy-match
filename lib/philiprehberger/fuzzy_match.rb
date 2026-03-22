@@ -15,9 +15,13 @@ module Philiprehberger
       JaroWinkler.similarity(str_a, str_b)
     end
 
+    def self.dice_coefficient(str_a, str_b)
+      Dice.coefficient(str_a, str_b)
+    end
+
     def self.ratio(str_a, str_b)
-      a = str_a.to_s
-      b = str_b.to_s
+      a = str_a.to_s.downcase
+      b = str_b.to_s.downcase
       max_len = [a.length, b.length].max
       return 1.0 if max_len.zero?
 
@@ -25,41 +29,38 @@ module Philiprehberger
       1.0 - (distance.to_f / max_len)
     end
 
-    def self.best_match(query, candidates, threshold: 0.0)
+    def self.best(query, candidates, threshold: 0.0)
       return nil if candidates.empty?
 
-      best = nil
+      best_result = nil
       best_score = -1.0
 
       candidates.each do |candidate|
         score = ratio(query, candidate.to_s)
         if score > best_score
-          best = candidate
+          best_result = candidate
           best_score = score
         end
       end
 
       return nil if best_score < threshold
 
-      { match: best, score: best_score.round(4) }
+      { match: best_result, score: best_score.round(4) }
     end
 
-    def self.search(query, candidates, key: nil, limit: nil, threshold: 0.0)
+    def self.search(query, candidates, threshold: 0.3)
       scored = candidates.map do |candidate|
-        text = key ? candidate[key].to_s : candidate.to_s
-        score = ratio(query, text)
+        score = ratio(query, candidate.to_s)
         { match: candidate, score: score.round(4) }
       end
 
       results = scored.select { |r| r[:score] >= threshold }
-      results.sort_by! { |r| -r[:score] }
-      results = results.first(limit) if limit
-      results
+      results.sort_by { |r| -r[:score] }
     end
 
-    def self.suggest(query, candidates, threshold: 0.6)
+    def self.suggest(query, candidates, threshold: 0.6, max: 5)
       results = search(query, candidates, threshold: threshold)
-      results.map { |r| r[:match] }
+      results.first(max).map { |r| r[:match] }
     end
   end
 end
