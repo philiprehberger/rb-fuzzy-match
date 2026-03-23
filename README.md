@@ -1,8 +1,8 @@
 # philiprehberger-fuzzy_match
 
-[![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://badge.fury.io/rb/philiprehberger-fuzzy_match)
-$badge_line
-[![CI](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml)
+[![Tests](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-fuzzy-match/actions/workflows/ci.yml)
+[![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://rubygems.org/gems/philiprehberger-fuzzy_match)
+[![License](https://img.shields.io/github/license/philiprehberger/rb-fuzzy-match)](LICENSE)
 
 Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search.
 
