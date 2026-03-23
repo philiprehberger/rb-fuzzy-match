@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://rubygems.org/gems/philiprehberger-fuzzy_match)
 [![License](https://img.shields.io/github/license/philiprehberger/rb-fuzzy-match)](LICENSE)
 
-Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search.
+Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search
 
 ## Requirements
 
@@ -12,14 +12,16 @@ Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search.
 
 ## Installation
 
-```sh
-gem install philiprehberger-fuzzy_match
-```
-
-Or add to your Gemfile:
+Add to your Gemfile:
 
 ```ruby
 gem 'philiprehberger-fuzzy_match'
+```
+
+Or install directly:
+
+```bash
+gem install philiprehberger-fuzzy_match
 ```
 
 ## Usage
@@ -78,7 +80,7 @@ All methods are case-insensitive by default.
 
 ## Development
 
-```sh
+```bash
 bundle install
 bundle exec rspec
 bundle exec rubocop
@@ -86,4 +88,4 @@ bundle exec rubocop
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT
