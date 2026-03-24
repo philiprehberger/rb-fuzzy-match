@@ -15,7 +15,7 @@ Fuzzy string matching with Levenshtein, Jaro-Winkler, and ranked search
 Add to your Gemfile:
 
 ```ruby
-gem 'philiprehberger-fuzzy_match'
+gem "philiprehberger-fuzzy_match"
 ```
 
 Or install directly:
