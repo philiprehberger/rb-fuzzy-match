@@ -7,6 +7,11 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.1.8] - 2026-03-24
+
+### Fixed
+- Fix stray character in CHANGELOG formatting
+
 ## [0.1.7] - 2026-03-24
 
 ### Fixed
@@ -27,7 +32,8 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 - Fix README badges to match template (Tests, Gem Version, License)
-n## [0.1.3] - 2026-03-22
+
+## [0.1.3] - 2026-03-22
 
 ### Changed
 - Add License badge to README
