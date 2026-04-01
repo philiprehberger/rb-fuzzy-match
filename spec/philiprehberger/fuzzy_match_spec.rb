@@ -143,4 +143,67 @@ RSpec.describe Philiprehberger::FuzzyMatch do
       expect(described_class.suggest('zzzzz', %w[abc], threshold: 0.9)).to be_empty
     end
   end
+
+  describe '.soundex' do
+    it 'generates Soundex code for Robert' do
+      expect(described_class.soundex('Robert')).to eq('R163')
+    end
+
+    it 'generates same code for similar sounding names' do
+      expect(described_class.soundex('Robert')).to eq(described_class.soundex('Rupert'))
+    end
+
+    it 'returns empty string for empty input' do
+      expect(described_class.soundex('')).to eq('')
+    end
+  end
+
+  describe '.metaphone' do
+    it 'generates Metaphone code' do
+      expect(described_class.metaphone('Smith')).to eq('SM0')
+    end
+
+    it 'handles silent letters' do
+      expect(described_class.metaphone('Knight')).to eq('NT')
+    end
+
+    it 'returns empty string for empty input' do
+      expect(described_class.metaphone('')).to eq('')
+    end
+  end
+
+  describe '.phonetic_match?' do
+    it 'returns true for phonetically similar names' do
+      expect(described_class.phonetic_match?('Robert', 'Rupert')).to be true
+    end
+
+    it 'returns false for different names' do
+      expect(described_class.phonetic_match?('Robert', 'Smith')).to be false
+    end
+
+    it 'returns false for empty strings' do
+      expect(described_class.phonetic_match?('', '')).to be false
+    end
+  end
+
+  describe '.deduplicate' do
+    it 'removes similar strings' do
+      result = described_class.deduplicate(%w[hello helo world wrld], threshold: 0.8)
+      expect(result.length).to be < 4
+    end
+
+    it 'keeps unique strings' do
+      result = described_class.deduplicate(%w[hello world foo], threshold: 0.9)
+      expect(result.length).to eq(3)
+    end
+
+    it 'supports different algorithms' do
+      result = described_class.deduplicate(%w[test testing], threshold: 0.7, algorithm: :dice)
+      expect(result.length).to be >= 1
+    end
+
+    it 'returns empty array for empty input' do
+      expect(described_class.deduplicate([])).to eq([])
+    end
+  end
 end
