@@ -12,14 +12,14 @@ Gem::Specification.new do |spec|
   spec.description = 'Match strings approximately using multiple algorithms: Levenshtein edit distance, ' \
                      'Jaro-Winkler similarity, and Dice coefficient. Find best matches from candidate ' \
                      'lists and generate did-you-mean suggestions.'
-  spec.homepage = 'https://github.com/philiprehberger/rb-fuzzy-match'
+  spec.homepage      = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-fuzzy_match'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1'
 
   spec.metadata['homepage_uri'] = spec.homepage
-  spec.metadata['source_code_uri'] = spec.homepage
-  spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/main/CHANGELOG.md"
-  spec.metadata['bug_tracker_uri'] = "#{spec.homepage}/issues"
+  spec.metadata['source_code_uri']       = 'https://github.com/philiprehberger/rb-fuzzy-match'
+  spec.metadata['changelog_uri']         = 'https://github.com/philiprehberger/rb-fuzzy-match/blob/main/CHANGELOG.md'
+  spec.metadata['bug_tracker_uri']       = 'https://github.com/philiprehberger/rb-fuzzy-match/issues'
   spec.metadata['rubygems_mfa_required'] = 'true'
 
   spec.files = Dir['lib/**/*.rb', 'LICENSE', 'README.md', 'CHANGELOG.md']
