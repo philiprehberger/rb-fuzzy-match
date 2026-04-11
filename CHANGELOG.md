@@ -7,6 +7,15 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-10
+
+### Added
+- `FuzzyMatch.damerau_levenshtein(a, b)` for Damerau-Levenshtein edit distance with transpositions
+- `FuzzyMatch.damerau_ratio(a, b)` for normalized Damerau-Levenshtein similarity (0.0 to 1.0)
+
+### Fixed
+- Make `Metaphone.encode_complex` private (was unintentionally public)
+
 ## [0.3.0] - 2026-04-10
 
 ### Added

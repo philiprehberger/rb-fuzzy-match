@@ -67,6 +67,40 @@ RSpec.describe Philiprehberger::FuzzyMatch do
     end
   end
 
+  describe '.damerau_levenshtein' do
+    it 'counts transposition as 1 edit' do
+      expect(described_class.damerau_levenshtein('teh', 'the')).to eq(1)
+    end
+
+    it 'returns 0 for identical strings' do
+      expect(described_class.damerau_levenshtein('abc', 'abc')).to eq(0)
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.damerau_levenshtein('ABC', 'abc')).to eq(0)
+    end
+  end
+
+  describe '.damerau_ratio' do
+    it 'returns 1.0 for identical strings' do
+      expect(described_class.damerau_ratio('hello', 'hello')).to eq(1.0)
+    end
+
+    it 'returns higher score than ratio for transpositions' do
+      dr = described_class.damerau_ratio('teh', 'the')
+      r = described_class.ratio('teh', 'the')
+      expect(dr).to be > r
+    end
+
+    it 'returns 1.0 for empty/empty' do
+      expect(described_class.damerau_ratio('', '')).to eq(1.0)
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.damerau_ratio('Hello', 'hello')).to eq(1.0)
+    end
+  end
+
   describe '.lcs' do
     it 'returns known LCS length' do
       expect(described_class.lcs('kitten', 'sitting')).to eq(4)

@@ -79,7 +79,7 @@ module Philiprehberger
         %w[A E I O U].include?(char)
       end
 
-      private_class_method :drop_initial_silent, :encode_char, :encode_c, :encode_g, :encode_h, :vowel?
+      private_class_method :drop_initial_silent, :encode_char, :encode_complex, :encode_c, :encode_g, :encode_h, :vowel?
     end
   end
 end

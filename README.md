@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://rubygems.org/gems/philiprehberger-fuzzy_match)
 [![Last updated](https://img.shields.io/github/last-commit/philiprehberger/rb-fuzzy-match)](https://github.com/philiprehberger/rb-fuzzy-match/commits/main)
 
-Fuzzy string matching with Levenshtein, Jaro-Winkler, LCS, and phonetic algorithms
+Fuzzy string matching with Levenshtein, Damerau-Levenshtein, Jaro-Winkler, LCS, and phonetic algorithms
 
 ## Requirements
 
@@ -36,6 +36,14 @@ Philiprehberger::FuzzyMatch.dice_coefficient('night', 'nacht') # => 0.25
 
 # Normalized ratio (0.0 to 1.0)
 Philiprehberger::FuzzyMatch.ratio('kitten', 'sitting')  # => ~0.57
+```
+
+### Damerau-Levenshtein (Transposition-Aware)
+
+```ruby
+# Counts adjacent transpositions as 1 edit (Levenshtein counts them as 2)
+Philiprehberger::FuzzyMatch.damerau_levenshtein('teh', 'the')   # => 1
+Philiprehberger::FuzzyMatch.damerau_ratio('teh', 'the')         # => ~0.667
 ```
 
 ### Longest Common Subsequence
@@ -93,6 +101,8 @@ Philiprehberger::FuzzyMatch.deduplicate(%w[hello helo world wrld], threshold: 0.
 | `.levenshtein(a, b)` | Levenshtein edit distance (integer) |
 | `.jaro_winkler(a, b)` | Jaro-Winkler similarity (0.0 to 1.0) |
 | `.dice_coefficient(a, b)` | Dice coefficient from bigram overlap (0.0 to 1.0) |
+| `.damerau_levenshtein(a, b)` | Damerau-Levenshtein distance with transpositions (integer) |
+| `.damerau_ratio(a, b)` | Normalized Damerau-Levenshtein similarity (0.0 to 1.0) |
 | `.lcs(a, b)` | Longest common subsequence length (integer) |
 | `.lcs_ratio(a, b)` | Normalized LCS similarity (0.0 to 1.0) |
 | `.ratio(a, b)` | Normalized Levenshtein ratio (0.0 to 1.0) |
