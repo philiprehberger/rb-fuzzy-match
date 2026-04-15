@@ -257,6 +257,126 @@ RSpec.describe Philiprehberger::FuzzyMatch do
     end
   end
 
+  describe '.hamming' do
+    it 'returns 0 for identical strings' do
+      expect(described_class.hamming('abc', 'abc')).to eq(0)
+    end
+
+    it 'returns 1 for a single character difference' do
+      expect(described_class.hamming('abc', 'adc')).to eq(1)
+    end
+
+    it 'returns length when all characters differ' do
+      expect(described_class.hamming('abc', 'xyz')).to eq(3)
+    end
+
+    it 'raises Error for different-length strings' do
+      expect { described_class.hamming('abc', 'ab') }.to raise_error(Philiprehberger::FuzzyMatch::Error)
+    end
+
+    it 'raises Error for empty vs non-empty' do
+      expect { described_class.hamming('', 'a') }.to raise_error(Philiprehberger::FuzzyMatch::Error)
+    end
+
+    it 'returns 0 for two empty strings' do
+      expect(described_class.hamming('', '')).to eq(0)
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.hamming('ABC', 'abc')).to eq(0)
+    end
+  end
+
+  describe '.token_sort_ratio' do
+    it 'returns 1.0 for identical strings' do
+      expect(described_class.token_sort_ratio('hello world', 'hello world')).to eq(1.0)
+    end
+
+    it 'returns 1.0 for reordered words' do
+      expect(described_class.token_sort_ratio('hello world', 'world hello')).to eq(1.0)
+    end
+
+    it 'scores higher for reordered words than plain jaro_winkler' do
+      a = 'john smith jr'
+      b = 'jr john smith'
+      token_score = described_class.token_sort_ratio(a, b)
+      plain_score = described_class.jaro_winkler(a, b)
+      expect(token_score).to be >= plain_score
+    end
+
+    it 'handles extra whitespace via split' do
+      expect(described_class.token_sort_ratio('hello  world', 'world hello')).to eq(1.0)
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.token_sort_ratio('Hello World', 'world hello')).to eq(1.0)
+    end
+  end
+
+  describe '.token_set_ratio' do
+    it 'returns 1.0 for identical token sets' do
+      expect(described_class.token_set_ratio('hello world', 'hello world')).to eq(1.0)
+    end
+
+    it 'returns 1.0 when one side has duplicate tokens' do
+      expect(described_class.token_set_ratio('hello hello world', 'hello world')).to eq(1.0)
+    end
+
+    it 'scores high for subset relationships' do
+      score = described_class.token_set_ratio('new york mets', 'new york mets vs atlanta braves')
+      expect(score).to be > 0.8
+    end
+
+    it 'is case insensitive' do
+      expect(described_class.token_set_ratio('Hello World', 'hello world')).to eq(1.0)
+    end
+
+    it 'handles reordered tokens' do
+      expect(described_class.token_set_ratio('world hello', 'hello world')).to eq(1.0)
+    end
+  end
+
+  describe '.weighted_score' do
+    it 'computes weighted combination of algorithms' do
+      score = described_class.weighted_score('kitten', 'sitting', weights: { jaro_winkler: 0.5, dice: 0.3, levenshtein_ratio: 0.2 })
+      expect(score).to be_between(0.0, 1.0)
+    end
+
+    it 'returns 1.0 for identical strings regardless of weights' do
+      score = described_class.weighted_score('hello', 'hello', weights: { jaro_winkler: 0.5, dice: 0.5 })
+      expect(score).to eq(1.0)
+    end
+
+    it 'raises Error when weights do not sum to 1.0' do
+      expect do
+        described_class.weighted_score('a', 'b', weights: { jaro_winkler: 0.5, dice: 0.3 })
+      end.to raise_error(Philiprehberger::FuzzyMatch::Error, /Weights must sum to 1.0/)
+    end
+
+    it 'raises Error for unknown algorithm' do
+      expect do
+        described_class.weighted_score('a', 'b', weights: { unknown_algo: 1.0 })
+      end.to raise_error(Philiprehberger::FuzzyMatch::Error, /Unknown algorithm/)
+    end
+
+    it 'supports lcs_ratio as a weight key' do
+      score = described_class.weighted_score('kitten', 'sitting', weights: { lcs_ratio: 0.5, damerau_ratio: 0.5 })
+      expect(score).to be_between(0.0, 1.0)
+    end
+
+    it 'returns higher score when higher-scoring algorithms are weighted more' do
+      jw_heavy = described_class.weighted_score('martha', 'marhta', weights: { jaro_winkler: 0.9, levenshtein_ratio: 0.1 })
+      lev_heavy = described_class.weighted_score('martha', 'marhta', weights: { jaro_winkler: 0.1, levenshtein_ratio: 0.9 })
+      # jaro_winkler scores higher for transpositions than levenshtein ratio
+      expect(jw_heavy).to be > lev_heavy
+    end
+
+    it 'accepts weights that sum to 1.0 with floating point' do
+      score = described_class.weighted_score('abc', 'abc', weights: { jaro_winkler: 0.3, dice: 0.3, levenshtein_ratio: 0.4 })
+      expect(score).to be_within(0.001).of(1.0)
+    end
+  end
+
   describe '.deduplicate' do
     it 'removes similar strings' do
       result = described_class.deduplicate(%w[hello helo world wrld], threshold: 0.8)

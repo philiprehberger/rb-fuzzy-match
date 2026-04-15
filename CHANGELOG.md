@@ -7,6 +7,14 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-04-14
+
+### Added
+- `FuzzyMatch.hamming(a, b)` for Hamming distance between equal-length strings
+- `FuzzyMatch.token_sort_ratio(a, b)` for token-sorted Jaro-Winkler similarity
+- `FuzzyMatch.token_set_ratio(a, b)` for token-set-based similarity comparison
+- `FuzzyMatch.weighted_score(a, b, weights:)` for weighted multi-algorithm scoring
+
 ## [0.4.0] - 2026-04-10
 
 ### Added

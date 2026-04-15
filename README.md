@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-fuzzy_match.svg)](https://rubygems.org/gems/philiprehberger-fuzzy_match)
 [![Last updated](https://img.shields.io/github/last-commit/philiprehberger/rb-fuzzy-match)](https://github.com/philiprehberger/rb-fuzzy-match/commits/main)
 
-Fuzzy string matching with Levenshtein, Damerau-Levenshtein, Jaro-Winkler, LCS, and phonetic algorithms
+Fuzzy string matching with Levenshtein, Damerau-Levenshtein, Jaro-Winkler, Hamming, LCS, token-based, and phonetic algorithms
 
 ## Requirements
 
@@ -92,6 +92,35 @@ Philiprehberger::FuzzyMatch.deduplicate(%w[hello helo world wrld], threshold: 0.
 # => ["hello", "world"]
 ```
 
+### Hamming Distance
+
+```ruby
+Philiprehberger::FuzzyMatch.hamming('karolin', 'kathrin')  # => 3
+Philiprehberger::FuzzyMatch.hamming('abc', 'abc')          # => 0
+# Raises Error for different-length strings
+```
+
+### Token-Based Matching
+
+```ruby
+# Token sort: reorder tokens alphabetically before comparing
+Philiprehberger::FuzzyMatch.token_sort_ratio('john smith jr', 'jr john smith')  # => 1.0
+
+# Token set: compare based on token set intersection/union
+Philiprehberger::FuzzyMatch.token_set_ratio('new york mets', 'new york mets vs atlanta braves')
+# => high score (shared tokens boost similarity)
+```
+
+### Weighted Scoring
+
+```ruby
+Philiprehberger::FuzzyMatch.weighted_score('kitten', 'sitting',
+  weights: { jaro_winkler: 0.5, dice: 0.3, levenshtein_ratio: 0.2 })
+# => weighted combination of algorithm scores
+# Supported keys: :jaro_winkler, :dice, :levenshtein_ratio, :lcs_ratio, :damerau_ratio
+# Weights must sum to 1.0
+```
+
 ## API
 
 ### `Philiprehberger::FuzzyMatch`
@@ -112,6 +141,10 @@ Philiprehberger::FuzzyMatch.deduplicate(%w[hello helo world wrld], threshold: 0.
 | `.soundex(string)` | Generate 4-character Soundex code |
 | `.metaphone(string)` | Generate Metaphone phonetic code |
 | `.phonetic_match?(a, b)` | Check if two strings match phonetically |
+| `.hamming(a, b)` | Hamming distance for equal-length strings (integer) |
+| `.token_sort_ratio(a, b)` | Token-sorted Jaro-Winkler similarity (0.0 to 1.0) |
+| `.token_set_ratio(a, b)` | Token-set-based similarity (0.0 to 1.0) |
+| `.weighted_score(a, b, weights:)` | Weighted multi-algorithm score (0.0 to 1.0) |
 | `.deduplicate(array, threshold:, algorithm:)` | Group and deduplicate similar strings |
 
 All methods are case-insensitive by default.
