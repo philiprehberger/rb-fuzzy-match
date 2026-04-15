@@ -113,6 +113,20 @@ module Philiprehberger
       results.first(max).map { |r| r[:match] }
     end
 
+    # Rank all candidates by similarity to the query (descending)
+    #
+    # @param query [String]
+    # @param candidates [Array<String>]
+    # @param algorithm [Symbol] :jaro_winkler (default), :dice, or :levenshtein
+    # @return [Array<Hash>] all candidates as `{ value:, score: }` sorted by score desc,
+    #   ties broken by original input order (stable)
+    def self.rank(query, candidates, algorithm: :jaro_winkler)
+      scored = candidates.each_with_index.map do |candidate, index|
+        [{ value: candidate, score: score_for(query, candidate.to_s, algorithm: algorithm) }, index]
+      end
+      scored.sort_by { |pair, index| [-pair[:score], index] }.map(&:first)
+    end
+
     # Generate a Soundex code for a string
     #
     # @param string [String]
@@ -231,17 +245,29 @@ module Philiprehberger
       representatives = []
       array.each do |item|
         duplicate = representatives.any? do |rep|
-          score = case algorithm
-                  when :jaro_winkler then jaro_winkler(rep, item)
-                  when :dice then dice_coefficient(rep, item)
-                  when :levenshtein then ratio(rep, item)
-                  else raise Error, "Unknown algorithm: #{algorithm}"
-                  end
-          score >= threshold
+          score_for(rep, item, algorithm: algorithm) >= threshold
         end
         representatives << item unless duplicate
       end
       representatives
     end
+
+    # Dispatch a similarity score for the given algorithm symbol.
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @param algorithm [Symbol] :jaro_winkler, :dice, or :levenshtein
+    # @return [Float] similarity between 0.0 and 1.0
+    # @raise [Error] when the algorithm is not supported
+    def self.score_for(str_a, str_b, algorithm:)
+      case algorithm
+      when :jaro_winkler then jaro_winkler(str_a, str_b)
+      when :dice then dice_coefficient(str_a, str_b)
+      when :levenshtein then ratio(str_a, str_b)
+      else raise Error, "Unknown algorithm: #{algorithm}"
+      end
+    end
+
+    private_class_method :score_for
   end
 end

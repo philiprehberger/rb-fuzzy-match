@@ -70,6 +70,17 @@ results = Philiprehberger::FuzzyMatch.search('comit', candidates, threshold: 0.5
 # => [{ match: "commit", score: 0.8333 }, { match: "comment", score: 0.7143 }, ...]
 ```
 
+### Rank candidates
+
+```ruby
+candidates = %w[commit comment command compare]
+Philiprehberger::FuzzyMatch.rank('comit', candidates)
+# => [{ value: "commit", score: ... }, { value: "comment", score: ... }, ...]
+
+# Choose algorithm (:jaro_winkler default, :dice, or :levenshtein)
+Philiprehberger::FuzzyMatch.rank('comit', candidates, algorithm: :levenshtein)
+```
+
 ### Did-You-Mean Suggestions
 
 ```ruby
@@ -138,6 +149,7 @@ Philiprehberger::FuzzyMatch.weighted_score('kitten', 'sitting',
 | `.best(query, candidates, threshold: 0.0)` | Best match as `{ match:, score: }` |
 | `.search(query, candidates, threshold: 0.3)` | Ranked array of `{ match:, score: }` |
 | `.suggest(query, candidates, threshold: 0.6, max: 5)` | Array of match strings |
+| `.rank(query, candidates, algorithm: :jaro_winkler)` | All candidates sorted desc as `{ value:, score: }` (stable) |
 | `.soundex(string)` | Generate 4-character Soundex code |
 | `.metaphone(string)` | Generate Metaphone phonetic code |
 | `.phonetic_match?(a, b)` | Check if two strings match phonetically |
