@@ -127,6 +127,18 @@ module Philiprehberger
       scored.sort_by { |pair, index| [-pair[:score], index] }.map(&:first)
     end
 
+    # Return the top N matches sorted by score descending
+    #
+    # @param query [String]
+    # @param candidates [Array<String>]
+    # @param n [Integer] number of results to return (required)
+    # @param algorithm [Symbol] :jaro_winkler (default), :dice, or :levenshtein
+    # @return [Array<Hash>] up to n candidates as `{ match:, score: }` sorted by score desc
+    def self.closest_n(query, candidates, n:, algorithm: :jaro_winkler)
+      ranked = rank(query, candidates, algorithm: algorithm)
+      ranked.first(n).map { |entry| { match: entry[:value], score: entry[:score] } }
+    end
+
     # Generate a Soundex code for a string
     #
     # @param string [String]

@@ -261,6 +261,54 @@ RSpec.describe Philiprehberger::FuzzyMatch do
     end
   end
 
+  describe '.closest_n' do
+    let(:candidates) { %w[commit comment command compare zebra] }
+
+    it 'returns top n matches sorted by score descending' do
+      results = described_class.closest_n('comit', candidates, n: 3)
+      expect(results.length).to eq(3)
+      scores = results.map { |r| r[:score] }
+      expect(scores).to eq(scores.sort.reverse)
+    end
+
+    it 'returns hashes with :match and :score keys' do
+      results = described_class.closest_n('comit', candidates, n: 2)
+      results.each do |entry|
+        expect(entry).to be_a(Hash)
+        expect(entry.keys).to contain_exactly(:match, :score)
+      end
+    end
+
+    it 'returns the best match first' do
+      results = described_class.closest_n('comit', candidates, n: 1)
+      expect(results.length).to eq(1)
+      expect(results.first[:match]).to eq('commit')
+    end
+
+    it 'returns all candidates when n exceeds candidate count' do
+      results = described_class.closest_n('comit', candidates, n: 100)
+      expect(results.length).to eq(candidates.length)
+    end
+
+    it 'returns empty array for empty candidates' do
+      expect(described_class.closest_n('anything', [], n: 3)).to eq([])
+    end
+
+    it 'supports algorithm keyword argument' do
+      results = described_class.closest_n('comit', candidates, n: 2, algorithm: :levenshtein)
+      expect(results.length).to eq(2)
+      results.each do |entry|
+        expect(entry[:score]).to be_between(0.0, 1.0)
+      end
+    end
+
+    it 'defaults to jaro_winkler algorithm' do
+      default_results = described_class.closest_n('comit', candidates, n: 3)
+      jw_results = described_class.closest_n('comit', candidates, n: 3, algorithm: :jaro_winkler)
+      expect(default_results.map { |r| r[:score] }).to eq(jw_results.map { |r| r[:score] })
+    end
+  end
+
   describe '.soundex' do
     it 'generates Soundex code for Robert' do
       expect(described_class.soundex('Robert')).to eq('R163')

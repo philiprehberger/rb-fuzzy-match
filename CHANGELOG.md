@@ -7,6 +7,14 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-04-16
+
+### Added
+- `FuzzyMatch.closest_n(query, candidates, n:, algorithm:)` returns the top N matches as `{ match:, score: }` hashes sorted by score descending
+
+### Fixed
+- Update gemspec `summary` to include "token-based," matching the README one-liner exactly
+
 ## [0.7.0] - 2026-04-15
 
 ### Added

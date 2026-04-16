@@ -8,7 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ['Philip Rehberger']
   spec.email = ['me@philiprehberger.com']
 
-  spec.summary = 'Fuzzy string matching with Levenshtein, Damerau-Levenshtein, Jaro-Winkler, Hamming, LCS, and phonetic algorithms'
+  spec.summary = 'Fuzzy string matching with Levenshtein, Damerau-Levenshtein, Jaro-Winkler, ' \
+                 'Hamming, LCS, token-based, and phonetic algorithms'
   spec.description = 'Match strings approximately using multiple algorithms: Levenshtein edit distance, ' \
                      'Damerau-Levenshtein with transpositions, Jaro-Winkler similarity, Dice coefficient, ' \
                      'Hamming distance, and Longest Common Subsequence. Includes token-based matching, ' \
