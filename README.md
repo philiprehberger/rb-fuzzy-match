@@ -96,6 +96,21 @@ Philiprehberger::FuzzyMatch.metaphone('Smith')    # => "SM0"
 Philiprehberger::FuzzyMatch.phonetic_match?('Robert', 'Rupert')  # => true
 ```
 
+### Similarity Matrix
+
+```ruby
+strings = %w[hello helo world]
+matrix = Philiprehberger::FuzzyMatch.similarity_matrix(strings)
+# => { "hello" => { "hello" => 1.0, "helo" => 0.9333, "world" => 0.4667 }, ... }
+
+# Filter to only high-similarity pairs
+matrix = Philiprehberger::FuzzyMatch.similarity_matrix(strings, threshold: 0.8)
+# => { "hello" => { "hello" => 1.0, "helo" => 0.9333 }, ... }
+
+# Choose algorithm (:jaro_winkler default, :dice, or :levenshtein)
+Philiprehberger::FuzzyMatch.similarity_matrix(strings, algorithm: :dice)
+```
+
 ### Deduplication
 
 ```ruby
@@ -157,6 +172,7 @@ Philiprehberger::FuzzyMatch.weighted_score('kitten', 'sitting',
 | `.token_sort_ratio(a, b)` | Token-sorted Jaro-Winkler similarity (0.0 to 1.0) |
 | `.token_set_ratio(a, b)` | Token-set-based similarity (0.0 to 1.0) |
 | `.weighted_score(a, b, weights:)` | Weighted multi-algorithm score (0.0 to 1.0) |
+| `.similarity_matrix(strings, algorithm:, threshold:)` | Pairwise similarity hash-of-hashes for batch comparison |
 | `.deduplicate(array, threshold:, algorithm:)` | Group and deduplicate similar strings |
 
 All methods are case-insensitive by default.

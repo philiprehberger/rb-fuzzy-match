@@ -252,6 +252,18 @@ module Philiprehberger
       representatives
     end
 
+    def self.similarity_matrix(strings, algorithm: :jaro_winkler, threshold: nil)
+      matrix = {}
+      strings.each do |a|
+        matrix[a] = {}
+        strings.each do |b|
+          score = score_for(a, b, algorithm: algorithm).round(4)
+          matrix[a][b] = score if threshold.nil? || score >= threshold
+        end
+      end
+      matrix
+    end
+
     # Dispatch a similarity score for the given algorithm symbol.
     #
     # @param str_a [String]
