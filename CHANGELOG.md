@@ -7,6 +7,11 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-04-26
+
+### Added
+- `FuzzyMatch.top_n` — return top-N best matches for a query against candidates with a configurable similarity floor and algorithm
+
 ## [0.8.0] - 2026-04-16
 
 ### Added

@@ -139,6 +139,20 @@ module Philiprehberger
       ranked.first(n).map { |entry| { match: entry[:value], score: entry[:score] } }
     end
 
+    # Return the top N best matches above an optional similarity floor
+    #
+    # @param query [String]
+    # @param candidates [Array<String>]
+    # @param n [Integer] number of results to return (required)
+    # @param algorithm [Symbol] :jaro_winkler (default), :dice, or :levenshtein
+    # @param min_similarity [Float] minimum similarity threshold; entries below are filtered out (default 0.0)
+    # @return [Array<Hash>] up to n candidates as `{ value:, similarity: }` sorted by similarity desc
+    def self.top_n(query, candidates, n:, algorithm: :jaro_winkler, min_similarity: 0.0)
+      ranked = rank(query, candidates, algorithm: algorithm)
+      filtered = ranked.select { |entry| entry[:score] >= min_similarity }
+      filtered.first(n).map { |entry| { value: entry[:value], similarity: entry[:score] } }
+    end
+
     # Generate a Soundex code for a string
     #
     # @param string [String]

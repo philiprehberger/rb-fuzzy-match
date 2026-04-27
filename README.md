@@ -92,6 +92,21 @@ results = Philiprehberger::FuzzyMatch.closest_n('comit', candidates, n: 3)
 Philiprehberger::FuzzyMatch.closest_n('comit', candidates, n: 2, algorithm: :levenshtein)
 ```
 
+### Top-N Matches
+
+```ruby
+candidates = %w[commit comment command compare zebra]
+results = Philiprehberger::FuzzyMatch.top_n('comit', candidates, n: 3)
+# => [{ value: "commit", similarity: ... }, { value: "comment", similarity: ... }, { value: "command", similarity: ... }]
+
+# Filter out low-similarity entries with min_similarity (default 0.0)
+Philiprehberger::FuzzyMatch.top_n('comit', candidates, n: 5, min_similarity: 0.7)
+# => only entries whose similarity >= 0.7
+
+# Choose algorithm (:jaro_winkler default, :dice, or :levenshtein)
+Philiprehberger::FuzzyMatch.top_n('comit', candidates, n: 2, algorithm: :levenshtein)
+```
+
 ### Did-You-Mean Suggestions
 
 ```ruby
@@ -177,6 +192,7 @@ Philiprehberger::FuzzyMatch.weighted_score('kitten', 'sitting',
 | `.suggest(query, candidates, threshold: 0.6, max: 5)` | Array of match strings |
 | `.rank(query, candidates, algorithm: :jaro_winkler)` | All candidates sorted desc as `{ value:, score: }` (stable) |
 | `.closest_n(query, candidates, n:, algorithm: :jaro_winkler)` | Top N matches as `{ match:, score: }` sorted by score descending |
+| `.top_n(query, candidates, n:, algorithm: :jaro_winkler, min_similarity: 0.0)` | Top-N matches as `{ value:, similarity: }` sorted by similarity descending, with optional similarity floor |
 | `.soundex(string)` | Generate 4-character Soundex code |
 | `.metaphone(string)` | Generate Metaphone phonetic code |
 | `.phonetic_match?(a, b)` | Check if two strings match phonetically |
