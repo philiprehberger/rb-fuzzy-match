@@ -7,6 +7,11 @@ and this gem adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-05-09
+
+### Added
+- `FuzzyMatch.partial_ratio(a, b)` — substring-style similarity. Slides the shorter string across every same-length window of the longer one and returns the maximum Levenshtein-based ratio. Mirrors FuzzyWuzzy's `partial_ratio` — the canonical answer to "does string A appear approximately inside string B?".
+
 ## [0.9.0] - 2026-04-26
 
 ### Added

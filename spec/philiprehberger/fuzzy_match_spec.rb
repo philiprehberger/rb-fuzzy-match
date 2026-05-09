@@ -550,4 +550,49 @@ RSpec.describe Philiprehberger::FuzzyMatch do
       expect(matrix).to eq({ 'hello' => { 'hello' => 1.0 } })
     end
   end
+
+  describe '.partial_ratio' do
+    it 'returns 1.0 when the shorter string appears verbatim inside the longer one' do
+      expect(described_class.partial_ratio('the cat', 'the cat sat on the mat')).to eq(1.0)
+    end
+
+    it 'returns 1.0 for identical strings' do
+      expect(described_class.partial_ratio('hello', 'hello')).to eq(1.0)
+    end
+
+    it 'is case-insensitive' do
+      expect(described_class.partial_ratio('Hello', 'WELL HELLO THERE')).to eq(1.0)
+    end
+
+    it 'returns a partial score for a near-substring match' do
+      score = described_class.partial_ratio('helo', 'why hello there')
+      expect(score).to be > 0.5
+      expect(score).to be < 1.0
+    end
+
+    it 'is symmetric in argument order' do
+      a = described_class.partial_ratio('the cat', 'the cat sat on the mat')
+      b = described_class.partial_ratio('the cat sat on the mat', 'the cat')
+      expect(a).to eq(b)
+    end
+
+    it 'returns 0.0 for completely unrelated strings' do
+      expect(described_class.partial_ratio('zzzz', 'abcd')).to eq(0.0)
+    end
+
+    it 'returns 1.0 when both inputs are empty' do
+      expect(described_class.partial_ratio('', '')).to eq(1.0)
+    end
+
+    it 'returns 0.0 when only one input is empty' do
+      expect(described_class.partial_ratio('', 'hello')).to eq(0.0)
+      expect(described_class.partial_ratio('hello', '')).to eq(0.0)
+    end
+
+    it 'beats whole-string ratio when the match is substring-shaped' do
+      whole = described_class.ratio('cat', 'a black cat sat on a mat')
+      partial = described_class.partial_ratio('cat', 'a black cat sat on a mat')
+      expect(partial).to be > whole
+    end
+  end
 end

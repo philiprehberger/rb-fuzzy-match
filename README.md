@@ -163,6 +163,23 @@ Philiprehberger::FuzzyMatch.token_set_ratio('new york mets', 'new york mets vs a
 # => high score (shared tokens boost similarity)
 ```
 
+### Partial (Substring) Ratio
+
+```ruby
+# "Does string A appear approximately inside string B?"
+Philiprehberger::FuzzyMatch.partial_ratio('the cat', 'the cat sat on the mat')
+# => 1.0
+
+Philiprehberger::FuzzyMatch.partial_ratio('cat', 'a black cat sat on a mat')
+# => 1.0
+
+Philiprehberger::FuzzyMatch.partial_ratio('helo', 'why hello there')
+# => ~0.75
+```
+
+Slides the shorter string across every same-length window of the longer
+one and returns the maximum Levenshtein-based ratio. FuzzyWuzzy parity.
+
 ### Weighted Scoring
 
 ```ruby
@@ -187,6 +204,7 @@ Philiprehberger::FuzzyMatch.weighted_score('kitten', 'sitting',
 | `.lcs(a, b)` | Longest common subsequence length (integer) |
 | `.lcs_ratio(a, b)` | Normalized LCS similarity (0.0 to 1.0) |
 | `.ratio(a, b)` | Normalized Levenshtein ratio (0.0 to 1.0) |
+| `.partial_ratio(a, b)` | Substring-style similarity: max Levenshtein ratio over windows of the longer string (0.0 to 1.0) |
 | `.best(query, candidates, threshold: 0.0)` | Best match as `{ match:, score: }` |
 | `.search(query, candidates, threshold: 0.3)` | Ranked array of `{ match:, score: }` |
 | `.suggest(query, candidates, threshold: 0.6, max: 5)` | Array of match strings |

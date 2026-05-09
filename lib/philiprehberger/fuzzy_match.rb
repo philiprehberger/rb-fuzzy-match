@@ -190,6 +190,41 @@ module Philiprehberger
       Hamming.distance(str_a, str_b)
     end
 
+    # Substring-style similarity (FuzzyWuzzy parity)
+    #
+    # Slides the shorter string across every same-length window of the longer
+    # string and returns the **maximum** Levenshtein-based similarity ratio.
+    # This is the canonical answer to "does string A appear approximately
+    # inside string B?" and complements `.ratio`, which compares the whole
+    # strings.
+    #
+    # Empty inputs:
+    # - both empty → 1.0
+    # - one empty  → 0.0
+    #
+    # @param str_a [String]
+    # @param str_b [String]
+    # @return [Float] similarity between 0.0 and 1.0
+    def self.partial_ratio(str_a, str_b)
+      a = str_a.to_s.downcase
+      b = str_b.to_s.downcase
+      return 1.0 if a.empty? && b.empty?
+      return 0.0 if a.empty? || b.empty?
+
+      shorter, longer = a.length <= b.length ? [a, b] : [b, a]
+      window = shorter.length
+
+      best = 0.0
+      (0..(longer.length - window)).each do |i|
+        slice = longer[i, window]
+        distance = Levenshtein.distance(shorter, slice)
+        score = 1.0 - (distance.to_f / window)
+        best = score if score > best
+        break if best >= 1.0
+      end
+      best
+    end
+
     # Token-sort ratio: sort tokens alphabetically, then compute Jaro-Winkler similarity
     #
     # @param str_a [String]
